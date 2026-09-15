@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeafletJS - Peta Indonesia (Fokus Jakarta & Jogja)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        html,
+        body,
+        #map {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        var map = L.map('map').setView([-6.9, 108.5], 7);
+
+        var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        });
+
+        var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        var rupabumiindonesia = L.tileLayer('https://geoservices.big.go.id/rbi/rest/services/BASEMAP/Rupabumi_Indonesia/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Badan Informasi Geospasial'
+        });
+
+        var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+        });
+
+        rupabumiindonesia.addTo(map);
+
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "Esri World Imagery": Esri_WorldImagery,
+            "Rupa Bumi Indonesia": rupabumiindonesia,
+            "OpenStreetMap Mapnik": OpenStreetMap_Mapnik,
+            "Esri World Topo Map": Esri_WorldTopoMap
+        };
+
+        var markerJakarta = L.marker([-6.2088, 106.8456]).addTo(map);
+        var markerJogja = L.marker([-7.7956, 110.3695]).addTo(map);
+
+        markerJakarta.bindPopup("<b>Jakarta</b><br>Pusat pemerintahan dan ekonomi negara Indonesia.");
+        markerJogja.bindPopup("<b>Yogyakarta</b><br>Daerah Istimewa yang kaya akan sejarah, budaya, dan kesenian Jawa.");
+
+        markerJakarta.bindTooltip("Jakarta");
+        markerJogja.bindTooltip("Yogyakarta");
+
+        var circleJogja = L.circle([-7.7956, 110.3695], {
+            color: "red",
+            opacity: 1,
+            fillColor: "yellow",
+            fillOpacity: 0.5,
+            radius: 1000
+        });
+        circleJogja.bindPopup("<b>Area Yogyakarta</b><br>Ini adalah area zona dengan radius 1 kilometer dari pusat marker Yogyakarta.");
+        circleJogja.bindTooltip("Zona Radius 1KM Yogyakarta");
+        circleJogja.addTo(map);
+
+        var circleJakarta = L.circle([-6.2088, 106.8456], {
+            color: "blue",
+            opacity: 1,
+            fillColor: "cyan",
+            fillOpacity: 0.5,
+            radius: 1500
+        });
+        circleJakarta.bindPopup("<b>Area Jakarta</b><br>Ini adalah area zona dengan radius 1.5 kilometer dari pusat marker Jakarta.");
+        circleJakarta.bindTooltip("Zona Radius 1.5KM Jakarta");
+        circleJakarta.addTo(map);
+
+        var vertexPolyline = [
+            [-6.1995106, 106.8761802],
+            [-6.1753924, 106.8271528],
+            [-6.2184607, 106.8023014]
+        ];
+        var polyline = L.polyline(vertexPolyline, {
+            color: "red",
+            weight: 10,
+            opacity: 1
+        });
+        polyline.bindPopup("<b>Jalur Jakarta</b><br>Ini adalah contoh jalur penghubung antar titik di Jakarta.");
+        polyline.bindTooltip("Jalur Merah Jakarta");
+        polyline.addTo(map);
+
+        var overlayMaps = {
+            "Marker Jakarta": markerJakarta,
+            "Marker Yogyakarta": markerJogja,
+            "Circle Jakarta": circleJakarta,
+            "Circle Yogyakarta": circleJogja,
+            "Polyline Jakarta": polyline
+        };
+
+        var controllayer = L.control.layers(baseMaps, overlayMaps, {
+            collapsed: false
+        });
+        controllayer.addTo(map);
+
+        L.control.scale().addTo(map);
+
+    </script>
+</body>
+
+</html>
